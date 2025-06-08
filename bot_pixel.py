@@ -4,72 +4,67 @@ import time
 from PIL import ImageGrab
 
 
-peche_map_1 = [
-    {"x": 1276, "y": 96, "color": 0x3976c5},
-    {"x": 1223, "y": 151, "color": 0x387bcf},
-    {"x": 1520, "y": 220, "color": 0x3a76c3},
-    {"x": 1277, "y": 440, "color": 0x28507c},
-    {"x": 1357, "y": 540, "color": 0x2355ac},
-    {"x": 1271, "y": 588, "color": 0x366dc2},
-    {"x": 1252, "y": 515, "color": 0x1f57b2},
-    {"x": 1211, "y": 563, "color": 0x3266ba},
-    {"x": 1187, "y": 535, "color": 0x275dba},
-    {"x": 890, "y": 733, "color": 0x295eaa},
-    {"x": 828, "y": 662, "color": 0x244983},
-    {"x": 1474, "y": 238, "color": 0x3877d8},
-    {"x": 1270, "y": 490, "color": 0x3062a5},
+ressource_position = [
+    {"x": 1205, "y": 142, "color": 0x3173d7},
+    {"x": 1277, "y": 97, "color": 0x2368b1},
+    {"x": 1447, "y": 157, "color": 0x1b5baf},
+    {"x": 1498, "y": 241, "color": 0x2b6fc2},
+    {"x": 1518, "y": 220, "color": 0x2166b2},
+    {"x": 1279, "y": 440, "color": 0x0d3f6d},
+    {"x": 1270, "y": 490, "color": 0x195396},
+    {"x": 1249, "y": 529, "color": 0x1954ab},
+    {"x": 1269, "y": 488, "color": 0x134a83},
+    {"x": 1270, "y": 578, "color": 0x2562ba},
+    {"x": 1175, "y": 539, "color": 0x235aab},
+    {"x": 893, "y": 734, "color": 0x15539c},
+    {"x": 827, "y": 661, "color": 0x153d79},
+    {"x": 786, "y": 682, "color": 0x0d407e},
+    {"x": 1174, "y": 517, "color": 0x1d57a4},
+    {"x": 1416, "y": 542, "color": 0x1254ac},
+    {"x": 1277, "y": 439, "color": 0xe3d6d},
+    {"x": 1228, "y": 513, "color": 0x175399},
 ]
 
-
-def scanner_map(peche_map_1):
+def fight_started():
+    x, y = 1780, 760
+    expected_color = 0xba4101
     img = ImageGrab.grab()
-    for banc in peche_map_1:
-        x = banc["x"]
-        y = banc["y"]
-        expected = banc["color"]
-        r, g, b = img.getpixel((x, y))
-        current = (r << 16) + (g << 8) + b
+    r, g, b = img.getpixel((x, y))
+    current = rgb_to_hex(r, g, b)
+    return current == expected_color
 
-        if current == expected:
-            print("Banc détecté à ({}, {}) - couleur : {}".format(x, y, hex(current)))
-        else:
-            print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
+def rgb_to_hex(r, g, b):
+    return (r << 16) + (g << 8) + b
 
+def click_at(x, y):
+    win32api.SetCursorPos((x, y))
+    time.sleep(0.25)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
-def click_peche():
-    print("début du farming")
-    for banc in peche_map_1:
-        x = banc["x"]
-        y = banc["y"]
-        expected = banc["color"]
+def scan_and_farm(farm_map):
+    print("farming started")
+    while True:
+        if fight_started():
+            print("fight detected, farming stopped.")
+            break
 
-        
-        win32api.SetCursorPos((x, y))
-        time.sleep(0.25)
+        for ressource in farm_map:
+            x, y, expected = ressource["x"], ressource["y"], ressource["color"]
 
-        
-        img = ImageGrab.grab()
-        r, g, b = img.getpixel((x, y))
-        current = (r << 16) + (g << 8) + b
+            img = ImageGrab.grab()
+            r, g, b = img.getpixel((x, y))
+            current = rgb_to_hex(r, g, b)
 
-        if current == expected:
-            print("Banc trouvé à ({}, {}), farming...".format(x, y, hex(current)))
-            
-            
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-            time.sleep(0.50)
+            if current == expected:
+                print("Ressource trouvé à ({}, {}), farming...".format(x, y, hex(current)))
+                click_at(x, y)
+                time.sleep(0.5)
+                click_at(x + 44, y + 44)
+                time.sleep(14)
+            else:
+                print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
 
-            
-            x_decale = x + 44
-            y_decale = y + 44
-            win32api.SetCursorPos((x_decale, y_decale))
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-            time.sleep(12)
+            time.sleep(0.1)
 
-        else:
-            print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
-
-scanner_map(peche_map_1)
-click_peche()
+scan_and_farm(ressource_position)

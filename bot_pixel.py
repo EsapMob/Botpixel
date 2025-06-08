@@ -5,25 +5,19 @@ from PIL import ImageGrab
 
 
 peche_map_1 = [
-    {"x": 1666, "y": 104, "color": 0x3e79d2},
-    {"x": 1453, "y": 195, "color": 0x2762c3},
-    {"x": 1395, "y": 162, "color": 0x2664c1},
-    {"x": 1243, "y": 189, "color": 0x2d67b6},
-    {"x": 1223, "y": 347, "color": 0x3a7acf},
-    {"x": 1132, "y": 317, "color": 0x3e7ac4},
-    {"x": 1154, "y": 286, "color": 0x3c7ace},
-    {"x": 1080, "y": 244, "color": 0x3c78c9},
-    {"x": 842, "y": 415, "color": 0x3976c6},
-    {"x": 787, "y": 440, "color": 0x3d7bc7},
-    {"x": 751, "y": 591, "color": 0x3779d9},
-    {"x": 876, "y": 490, "color": 0x3b75cd},
-    {"x": 795, "y": 490, "color": 0x3d7bc7},
-    {"x": 1291, "y": 703, "color": 0x3d78c6},
-    {"x": 1316, "y": 613, "color": 0x2357a7},
-    {"x": 1438, "y": 582, "color": 0x2c66b2},
-    {"x": 1420, "y": 514, "color": 0x356494},
-    {"x": 1825, "y": 434, "color": 0x3d78bd},
-    {"x": 1839, "y": 366, "color": 0x2c6bc6},
+    {"x": 1276, "y": 96, "color": 0x3976c5},
+    {"x": 1223, "y": 151, "color": 0x387bcf},
+    {"x": 1520, "y": 220, "color": 0x3a76c3},
+    {"x": 1277, "y": 440, "color": 0x28507c},
+    {"x": 1357, "y": 540, "color": 0x2355ac},
+    {"x": 1271, "y": 588, "color": 0x366dc2},
+    {"x": 1252, "y": 515, "color": 0x1f57b2},
+    {"x": 1211, "y": 563, "color": 0x3266ba},
+    {"x": 1187, "y": 535, "color": 0x275dba},
+    {"x": 890, "y": 733, "color": 0x295eaa},
+    {"x": 828, "y": 662, "color": 0x244983},
+    {"x": 1474, "y": 238, "color": 0x3877d8},
+    {"x": 1270, "y": 490, "color": 0x3062a5},
 ]
 
 
@@ -41,7 +35,6 @@ def scanner_map(peche_map_1):
         else:
             print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
 
-scanner_map(peche_map_1)
 
 def click_peche():
     print("début du farming")
@@ -60,7 +53,7 @@ def click_peche():
         current = (r << 16) + (g << 8) + b
 
         if current == expected:
-            print("Banc trouvé à ({}, {}) - couleur correcte : {}, clic...".format(x, y, hex(current)))
+            print("Banc trouvé à ({}, {}), farming...".format(x, y, hex(current)))
             
             
             win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
@@ -78,5 +71,5 @@ def click_peche():
         else:
             print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
 
-
+scanner_map(peche_map_1)
 click_peche()

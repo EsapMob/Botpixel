@@ -23,18 +23,33 @@ ressource_position = [
     {"x": 1416, "y": 542, "color": 0x1254ac},
     {"x": 1277, "y": 439, "color": 0xe3d6d},
     {"x": 1228, "y": 513, "color": 0x175399},
+    {"x": 1512, "y": 269, "color": 0x3b78d4},
 ]
 
-def fight_started():
-    x, y = 1780, 760
-    expected_color = 0xba4101
+fight_button = {"x": 1780, "y": 760, "colors": [0xba4101, 0xff6600, 0xff6100]}
+ending_button = {"x": 1604, "y": 649, "colors": [0xba4101, 0xff6600, 0xff6100]}
+
+
+def fighting():
+    x, y = fight_button["x"], fight_button["y"]
+    colors = fight_button["colors"]
     img = ImageGrab.grab()
     r, g, b = img.getpixel((x, y))
     current = rgb_to_hex(r, g, b)
-    return current == expected_color
+    return current in colors
+
+def fought():
+    x, y = ending_button["x"], ending_button["y"]
+    colors = ending_button["colors"]
+    img = ImageGrab.grab()
+    r, g, b = img.getpixel((x, y))
+    current = rgb_to_hex(r, g, b)
+    return current in colors
+
 
 def rgb_to_hex(r, g, b):
     return (r << 16) + (g << 8) + b
+
 
 def click_at(x, y):
     win32api.SetCursorPos((x, y))
@@ -42,13 +57,24 @@ def click_at(x, y):
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
+
 def scan_and_farm(farm_map):
     print("farming started")
     while True:
-        if fight_started():
-            print("fight detected, farming stopped.")
-            break
+        if fighting():
+            print("fight detected")
+            click_at(fight_button["x"], fight_button["y"])
+            time.sleep(5)
 
+        elif fought():
+            print("Fight ended")
+            click_at(ending_button["x"], ending_button["y"])
+            time.sleep(3)
+
+        else:
+            time.sleep(1)
+
+                
         for ressource in farm_map:
             x, y, expected = ressource["x"], ressource["y"], ressource["color"]
 
@@ -66,5 +92,6 @@ def scan_and_farm(farm_map):
                 print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
 
             time.sleep(0.1)
+
 
 scan_and_farm(ressource_position)

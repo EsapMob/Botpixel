@@ -2,7 +2,9 @@ import win32api
 import win32con
 import time
 from PIL import ImageGrab
-
+import cv2
+import numpy as np
+import pyautogui
 
 ressource_position = [
     {"x": 1205, "y": 142, "color": 0x3173d7},
@@ -24,6 +26,7 @@ ressource_position = [
     {"x": 1277, "y": 439, "color": 0xe3d6d},
     {"x": 1228, "y": 513, "color": 0x175399},
     {"x": 1512, "y": 269, "color": 0x3b78d4},
+    {"x": 1510, "y": 268, "color": 0x3173d6},
 ]
 
 fight_button = {"x": 1780, "y": 760, "colors": [0xba4101, 0xff6600, 0xff6100]}

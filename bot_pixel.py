@@ -5,35 +5,38 @@ from PIL import ImageGrab
 import cv2
 import numpy as np
 import pyautogui
+import function_fight
 
 ressource_position = [
-    {"x": 1205, "y": 142, "color": 0x3173d7},
-    {"x": 1277, "y": 97, "color": 0x2368b1},
-    {"x": 1447, "y": 157, "color": 0x1b5baf},
-    {"x": 1498, "y": 241, "color": 0x2b6fc2},
-    {"x": 1518, "y": 220, "color": 0x2166b2},
-    {"x": 1279, "y": 440, "color": 0x0d3f6d},
-    {"x": 1270, "y": 490, "color": 0x195396},
-    {"x": 1249, "y": 529, "color": 0x1954ab},
-    {"x": 1269, "y": 488, "color": 0x134a83},
-    {"x": 1270, "y": 578, "color": 0x2562ba},
-    {"x": 1175, "y": 539, "color": 0x235aab},
-    {"x": 893, "y": 734, "color": 0x15539c},
-    {"x": 827, "y": 661, "color": 0x153d79},
-    {"x": 786, "y": 682, "color": 0x0d407e},
-    {"x": 1174, "y": 517, "color": 0x1d57a4},
-    {"x": 1416, "y": 542, "color": 0x1254ac},
-    {"x": 1277, "y": 439, "color": 0xe3d6d},
-    {"x": 1228, "y": 513, "color": 0x175399},
-    {"x": 1512, "y": 269, "color": 0x3b78d4},
-    {"x": 1510, "y": 268, "color": 0x3173d6},
+    {"x": 759, "y": 573, "color": 0x4685ea},
+    {"x": 818, "y": 505, "color": 0x296fc5},
+    {"x": 934, "y": 493, "color": 0x2064b9},
+    {"x": 865, "y": 430, "color": 0x2c70d1},
+    {"x": 1223, "y": 346, "color": 0x2c70c2},
+    {"x": 1134, "y": 317, "color": 0x266cba},
+    {"x": 1154, "y": 285, "color": 0x296ec0},
+    {"x": 1359, "y": 170, "color": 0x1659bc},
+    {"x": 1666, "y": 89, "color": 0x2f77db},
+    {"x": 1454, "y": 195, "color": 0x2b68bc},
+    {"x": 1278, "y": 587, "color": 0x1e5787},
+    {"x": 1420, "y": 512, "color": 0x1d548a},
+    {"x": 1854, "y": 340, "color": 0x2160a6},
+    {"x": 1242, "y": 188, "color": 0x1458ae},
+    {"x": 1437, "y": 579, "color": 0x1358b3},
+    {"x": 1292, "y": 703, "color": 0x2467b3},
+    {"x": 1077, "y": 243, "color": 0x578fc4},
 ]
 
+cases = [
+    {"x": 1498, "y": 267, "color": 0xff0000},
+    {"x": 921, "y": 561, "color": 0xff0000},
+    ]
+
 fight_button = {"x": 1780, "y": 760, "colors": [0xba4101, 0xff6600, 0xff6100]}
-ending_button = {"x": 1604, "y": 649, "colors": [0xba4101, 0xff6600, 0xff6100]}
+ending_button = {"x": 1607, "y": 611, "colors": [0xba4101, 0xff6600, 0xff6100]}
 
 
-def fighting():
+def start_fight():
     x, y = fight_button["x"], fight_button["y"]
     colors = fight_button["colors"]
     img = ImageGrab.grab()
@@ -41,7 +44,7 @@ def fighting():
     current = rgb_to_hex(r, g, b)
     return current in colors
 
-def fought():
+def close_fight():
     x, y = ending_button["x"], ending_button["y"]
     colors = ending_button["colors"]
     img = ImageGrab.grab()
@@ -64,15 +67,23 @@ def click_at(x, y):
 def scan_and_farm(farm_map):
     print("farming started")
     while True:
-        if fighting():
+        if start_fight():
             print("fight detected")
+            img = ImageGrab.grab()
+
+            for case in cases:
+                r, g, b = img.getpixel((case["x"], case["y"]))
+
+                if rgb_to_hex(r, g, b) == case["color"]:
+                    print("Case rouge détectée à ({}, {}), clique dessus".format(case["x"], case["y"]))
+                    click_at(case["x"], case["y"])
+                    time.sleep(0.3)
+                    break
+
             click_at(fight_button["x"], fight_button["y"])
             time.sleep(5)
 
-        elif fought():
-            print("Fight ended")
-            click_at(ending_button["x"], ending_button["y"])
-            time.sleep(3)
+            function_fight.fight_process()
 
         else:
             time.sleep(1)
@@ -97,4 +108,5 @@ def scan_and_farm(farm_map):
             time.sleep(0.1)
 
 
-scan_and_farm(ressource_position)
+if __name__ == "__main__":
+    scan_and_farm(ressource_position)

@@ -4,10 +4,8 @@ import time
 from PIL import ImageGrab
 import cv2
 import numpy as np
-import pyautogui
 
 
-mob_blue = ("devoreur.png")
 charactere_red = [
     "personnage.png",
     "personnage_1.png",
@@ -16,8 +14,9 @@ charactere_red = [
 ]
 
 
-ending_button = {"x": 1607, "y": 611, "colors": [0xba4101, 0xff6600, 0xff6100]}
+pod_button = {"x": 1272, "y": 859, "colors": 0xff6600}
 pass_button = {"x": 1462, "y": 990, "colors": 0xffffff}
+ending_button = {"x": 1663, "y": 634}
 
 
 def rgb_to_hex(r, g, b):
@@ -35,12 +34,18 @@ def pass_tour():
 
 
 def close_fight():
-    x, y = ending_button["x"], ending_button["y"]
-    colors = ending_button["colors"]
     img = ImageGrab.grab()
-    r, g, b = img.getpixel((x, y))
-    current = rgb_to_hex(r, g, b)
-    return current in colors
+    target_color = 0xff6100
+
+    for x in range(1407, 1812):
+        for y in range(556, 868):
+            r, g, b = img.getpixel((x, y))
+            current = rgb_to_hex(r, g, b)
+            if current == target_color:
+                click_at(x, y)
+                print("Clic détecté sur", hex(current), "à (", x, ",", y, ")")
+                return True
+    return False
 
 
 def click_at(x, y):
@@ -48,6 +53,12 @@ def click_at(x, y):
     time.sleep(0.2)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+
+def double_click(x, y):
+    for _ in range(2):
+        click_at(x, y)
+        time.sleep(0.05)
 
 
 def fight_process():
@@ -83,10 +94,6 @@ def fight_process():
         print("Personnage non détecté à l'écran.")
 
 
-    charactere_position()
-
-
-
     def invocation_spell():
         pos = charactere_position()
         if pos:
@@ -94,20 +101,20 @@ def fight_process():
             target_x = x + 60
             target_y = y + 30
 
-            win32api.keybd_event(0x54, 0, 0, 0) #Raccourci du T
-            win32api.keybd_event(0x54, 0, win32con.KEYEVENTF_KEYUP, 0)
-            print("[SORT] épée volante")
+            for i in range(2):
+                win32api.keybd_event(0x54, 0, 0, 0) #Raccourci du T
+                win32api.keybd_event(0x54, 0, win32con.KEYEVENTF_KEYUP, 0)
+                print("[SORT] épée volante")
 
-            time.sleep(2)
+                time.sleep(0.5)
 
-            click_at(target_x, target_y)
-            print("[CLIC] à x=", target_x, "y=", target_y)
-            time.sleep(2)
+                click_at(target_x, target_y)
+                print("[CLIC] à x=", target_x, "y=", target_y)
+                time.sleep(1.3)
         else:
             print("Position du personnage non détectée, pas de sort lancé.")
 
         while True:
-            print("[DEBUG] close_fight() =", close_fight())
             if close_fight():
                 print("[INFO] Fin de combat détectée")
                 click_at(ending_button["x"], ending_button["y"])
@@ -123,7 +130,7 @@ def fight_process():
                     
 
 
-    time.sleep(4) # délais entre trouver le perso et select le sort
+    time.sleep(1) # délais entre trouver le perso et select le sort
     invocation_spell()
 
 if __name__ == "__main__":

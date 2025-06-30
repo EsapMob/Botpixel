@@ -4,15 +4,16 @@ import time
 from PIL import ImageGrab
 import cv2
 import numpy as np
+import os
 
 
 charactere_red = [
     "personnage.png",
     "personnage_1.png",
     "personnage_2.png",
-    "personnage_3.png"
+    "personnage_3.png",
+    "personnage_4.png"
 ]
-
 
 pod_button = {"x": 1272, "y": 859, "colors": 0xff6600}
 pass_button = {"x": 1462, "y": 990, "colors": 0xffffff}
@@ -43,7 +44,6 @@ def close_fight():
             current = rgb_to_hex(r, g, b)
             if current == target_color:
                 click_at(x, y)
-                print("Clic détecté sur", hex(current), "à (", x, ",", y, ")")
                 return True
     return False
 
@@ -61,78 +61,39 @@ def double_click(x, y):
         time.sleep(0.05)
 
 
-def fight_process():
-    def charactere_position(threshold=0.60):
-        time.sleep(0.2)
-        screenshot = np.array(ImageGrab.grab())
-        screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-
-        for image_path in charactere_red:
-            template = cv2.imread(image_path, 0)
-            if template is None:
-                print("Image non trouvée ou invalide :", image_path)
-                continue
-
-            w, h = template.shape[::-1]
-
-            result = cv2.matchTemplate(screenshot_gray, template, cv2.TM_CCOEFF_NORMED)
-            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-
-            if max_val >= threshold:
-                center_x = max_loc[0] + w // 2
-                center_y = max_loc[1] + h // 2
-                return (center_x, center_y)
-
-        return None
-
-    pos = charactere_position()
-
-    if pos:
-        x, y = pos
-        print("Position du personnage trouvée : x =", x, "y =", y)
-    else:
-        print("Personnage non détecté à l'écran.")
-
-
+def fight_process(case_x, case_y):
     def invocation_spell():
-        pos = charactere_position()
-        if pos:
-            x, y = pos
-            target_x = x + 60
-            target_y = y + 30
+        target_x = case_x + 60
+        target_y = case_y + 30
 
-            for i in range(2):
-                win32api.keybd_event(0x54, 0, 0, 0) #Raccourci du T
-                win32api.keybd_event(0x54, 0, win32con.KEYEVENTF_KEYUP, 0)
-                print("[SORT] épée volante")
+        for i in range(2):
+            win32api.keybd_event(0x54, 0, 0, 0)  # T
+            win32api.keybd_event(0x54, 0, win32con.KEYEVENTF_KEYUP, 0)
+            print("[SORT] épée volante")
 
-                time.sleep(0.5)
+            time.sleep(1.5)
 
-                click_at(target_x, target_y)
-                print("[CLIC] à x=", target_x, "y=", target_y)
-                time.sleep(1.3)
-        else:
-            print("Position du personnage non détectée, pas de sort lancé.")
+            click_at(target_x, target_y)
+            print("[CLIC] à x =", target_x, "y =", target_y)
+            time.sleep(0.5)
 
         while True:
             if close_fight():
-                print("[INFO] Fin de combat détectée")
+                print("[INFO] Fin de combat")
                 click_at(ending_button["x"], ending_button["y"])
+                time.sleep(2)
                 break
 
             elif pass_tour():
                 print("[INFO] Passe son tour")
                 click_at(pass_button["x"], pass_button["y"])
                 time.sleep(7)
-
             else:
                 time.sleep(1)
-                    
 
-
-    time.sleep(1) # délais entre trouver le perso et select le sort
+    time.sleep(1)
     invocation_spell()
+
 
 if __name__ == "__main__":
     fight_process()
-

@@ -123,14 +123,14 @@ def scan_and_farm(farm_map):
             continue
 
         if start_fight():
-            print("fight detected")
+            print("[INFO] fight detected")
             img = ImageGrab.grab()
 
             for case in cases:
                 r, g, b = img.getpixel((case["x"], case["y"]))
 
                 if rgb_to_hex(r, g, b) == case["color"]:
-                    print("Case rouge détectée à ({}, {}), clique dessus".format(case["x"], case["y"]))
+                    print("[POSITION] Case rouge détectée à ({}, {}), clique dessus".format(case["x"], case["y"]))
                     click_at(case["x"], case["y"])
                     time.sleep(0.5)
                     break
@@ -138,7 +138,7 @@ def scan_and_farm(farm_map):
             click_at(fight_button["x"], fight_button["y"])
             time.sleep(7)
 
-            function_fight.fight_process()
+            function_fight.fight_process(case["x"], case["y"])
                 
         for ressource in farm_map:
             x, y, expected = ressource["x"], ressource["y"], ressource["color"]
@@ -148,13 +148,13 @@ def scan_and_farm(farm_map):
             current = rgb_to_hex(r, g, b)
 
             if current == expected:
-                print("Ressource trouvé à ({}, {}), farming...".format(x, y, hex(current)))
+                print("[FARM] Ressource trouvé à ({}, {}), farming...".format(x, y, hex(current)))
                 click_at(x, y)
                 time.sleep(0.5)
                 click_at(x + 44, y + 44)
                 time.sleep(14)
             else:
-                print("Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
+                print("[CHECK] Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
 
             time.sleep(0.1)
 

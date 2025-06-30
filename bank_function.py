@@ -83,6 +83,7 @@ def empty_process():
 
         click_at(1622, 242)
         print("[INFO] Ressources diverses")
+        time.sleep(4)
 
 
     def backto_fish():
@@ -130,18 +131,31 @@ def empty_process():
             template = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
             if template is None:
-                print("Image manquante :", path)
+                print("[DEBUG] Image manquante :", path)
                 continue
 
             res = cv2.matchTemplate(screen_gray, template, cv2.TM_CCOEFF_NORMED)
-            threshold = 0.55
+            threshold = 0.50
             loc = np.where(res >= threshold)
 
             for point in zip(*loc[::-1]):
                 x = point[0] + template.shape[1] // 2 + zone[0]
                 y = point[1] + template.shape[0] // 2 + zone[1]
-                print("[DETECTE] sac_", i, "à (", x, ",", y, ")")
-                double_click(x, y)
+                print("[DETECT] sac_", i, "à (", x, ",", y, ")")
+
+                
+                win32api.keybd_event(0x11, 0, 0, 0)  # touche CTRL
+
+                for _ in range(2):
+                    win32api.SetCursorPos((x, y))
+                    time.sleep(0.05)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+                    time.sleep(0.05)
+
+                
+                win32api.keybd_event(0x11, 0, win32con.KEYEVENTF_KEYUP, 0)
+
                 time.sleep(0.2)
                 found_any = True
                 break
@@ -152,7 +166,7 @@ def empty_process():
 
     while True:
         if not empty_bag():
-            print("Aucun sac détecté, retour à la pêche")
+            print("[DEBUG] Aucun sac détecté, retour à la pêche")
             backto_fish()
             break
         time.sleep(1)

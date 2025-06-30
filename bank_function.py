@@ -4,7 +4,7 @@ import time
 from PIL import ImageGrab
 import cv2
 import numpy as np
-import function_fight
+import fight_function
 import os
 
 

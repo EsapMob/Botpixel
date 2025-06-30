@@ -4,7 +4,7 @@ import time
 from PIL import ImageGrab
 import cv2
 import numpy as np
-import function_fight
+import fight_function
 import bank_function
 
 ressource_position = [
@@ -138,7 +138,7 @@ def scan_and_farm(farm_map):
             click_at(fight_button["x"], fight_button["y"])
             time.sleep(7)
 
-            function_fight.fight_process(case["x"], case["y"])
+            fight_function.fight_process(case["x"], case["y"])
                 
         for ressource in farm_map:
             x, y, expected = ressource["x"], ressource["y"], ressource["color"]

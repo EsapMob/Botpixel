@@ -43,11 +43,11 @@ ressource_position = [
 
 cases = [
     {"x": 1498, "y": 267, "color": 0xff0000},
-    {"x": 921, "y": 561, "color": 0xff0000},
+    {"x": 875, "y": 585, "color": 0xff0000},
     ]
 
 
-pod_button = {"x": 1272, "y": 859, "colors": 0xff6600}
+pod_button = {"x": 1282, "y": 853, "colors": 0xff6600}
 fight_button = {"x": 1780, "y": 760, "colors": [0xba4101, 0xff6600, 0xff6100]}
 ending_button = {"x": 1672, "y": 622, "colors": [0xffffff, 0xff6100, 0x514a3c]}
 pass_button = {"x": 1462, "y": 990, "colors": 0xffffff}
@@ -118,6 +118,7 @@ def scan_and_farm(farm_map):
     while True:
         if full_pod():
             print("[INFO] Full pods. Vroom la banque.")
+            time.sleep(15)
             bank_function.empty_process()
             print("[INFO] Back to pechoune.")
             continue
@@ -132,7 +133,7 @@ def scan_and_farm(farm_map):
                 if rgb_to_hex(r, g, b) == case["color"]:
                     print("[POSITION] Case rouge détectée à ({}, {}), clique dessus".format(case["x"], case["y"]))
                     click_at(case["x"], case["y"])
-                    time.sleep(0.5)
+                    time.sleep(1.5)
                     break
 
             click_at(fight_button["x"], fight_button["y"])

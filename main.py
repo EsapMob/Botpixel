@@ -153,7 +153,7 @@ def scan_and_farm(farm_map):
                 click_at(x, y)
                 time.sleep(0.5)
                 click_at(x + 44, y + 44)
-                time.sleep(14)
+                time.sleep(6)
             else:
                 print("[CHECK] Rien à ({}, {}) - attendu : {} / vu : {}".format(x, y, hex(expected), hex(current)))
 

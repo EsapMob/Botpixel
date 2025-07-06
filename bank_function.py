@@ -42,7 +42,7 @@ def empty_process():
 
     def goto_bank():
         print("[DEBUG] goto_bank appelé")
-        time.sleep(5)
+        time.sleep(7)
         win32api.keybd_event(0x55, 0, 0, 0)  # Touche 'u'
         win32api.keybd_event(0x55, 0, win32con.KEYEVENTF_KEYUP, 0)
         print("[POPO] Brakma")
@@ -178,5 +178,3 @@ if __name__ == "__main__":
 
 
  
-
-

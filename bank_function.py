@@ -19,7 +19,7 @@ def click_at(x, y):
 
 
 def double_click(x, y):
-    for _ in range(3):
+    for _ in range(2):
         click_at(x, y)
         time.sleep(0.05)
 
@@ -51,31 +51,31 @@ def empty_process():
 
         click_at(1582, 155)
         print("[INFO] Zaapi")
-        time.sleep(1)
+        time.sleep(2)
 
         click_at(1641, 200)
         print("[INFO] Se faire transporter")
-        time.sleep(2)
+        time.sleep(3)
 
         click_at(1183, 164)
         print("[INFO] Divers")
-        time.sleep(1)
+        time.sleep(2)
 
         click_at(1038, 291)
         print("[INFO] Banque")
-        time.sleep(3)
+        time.sleep(4)
 
         click_at(1581, 341)
         print("[INFO] Entrer en banque")
-        time.sleep(5)
+        time.sleep(6)
 
         click_at(1675, 462)
         print("[INFO] Banquier")
-        time.sleep(1)
+        time.sleep(2)
 
         click_at(1705, 482)
         print("[INFO] Parler")
-        time.sleep(1)
+        time.sleep(2)
 
         click_at(1079, 469)
         print("[INFO] Consulter son coffre personnel")
@@ -89,7 +89,7 @@ def empty_process():
     def backto_fish():
         click_at(1873, 195)
         print("[INFO] Fermer la banque")
-        time.sleep(1)
+        time.sleep(2)
 
         win32api.keybd_event(0x59, 0, 0, 0)  # Touche 'y'
         win32api.keybd_event(0x59, 0, win32con.KEYEVENTF_KEYUP, 0)
@@ -97,22 +97,22 @@ def empty_process():
         time.sleep(3)
 
         click_at(1870, 734)
-        time.sleep(5)
+        time.sleep(6)
 
         click_at(1100, 785)
-        time.sleep(5)
+        time.sleep(6)
 
         click_at(1867, 248)
-        time.sleep(5)
+        time.sleep(6)
 
         click_at(1572, 43)
-        time.sleep(6)
+        time.sleep(7)
 
         click_at(1877, 238)
-        time.sleep(5)
+        time.sleep(6)
 
         click_at(1866, 96)
-        time.sleep(6)
+        time.sleep(7)
 
         click_at(847, 629)
 
@@ -127,7 +127,7 @@ def empty_process():
             screen = np.array(ImageGrab.grab(bbox=zone))
             screen_gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
-            path = os.path.join(templates_dir, "sac_" + str(i) + ".png")
+            path = os.path.join(templates_dir, "sac" + str(i) + ".png")
             template = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
             if template is None:
@@ -141,7 +141,7 @@ def empty_process():
             for point in zip(*loc[::-1]):
                 x = point[0] + template.shape[1] // 2 + zone[0]
                 y = point[1] + template.shape[0] // 2 + zone[1]
-                print("[DETECT] sac_", i, "à (", x, ",", y, ")")
+                print("[DETECT] sac", i, "à (", x, ",", y, ")")
 
                 
                 win32api.keybd_event(0x11, 0, 0, 0)  # touche CTRL
@@ -156,7 +156,7 @@ def empty_process():
                 
                 win32api.keybd_event(0x11, 0, win32con.KEYEVENTF_KEYUP, 0)
 
-                time.sleep(0.2)
+                time.sleep(1)
                 found_any = True
                 break
 
